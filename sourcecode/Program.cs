@@ -17,14 +17,15 @@ namespace sourcecode
 
         static void Main(string[] args)
         {
-            string url;
+            string url = "http://www.jojcatering.se/";
             string sourcecode;
             int list = 0;
-            int[] storlekborjan = new int[9];
-            int[] storlekslutet = new int[9];
-            string[] matMeny = new string[9];
+            int[] storlekborjan = new int[10];
+            int[] storlekslutet = new int[10];
+            byte[] matMenyByte;
+            string[] matMeny = new string[10];
 
-            url = Console.ReadLine();
+
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 
@@ -32,64 +33,59 @@ namespace sourcecode
 
             sourcecode = Convert.ToString(sr.ReadToEnd());
 
-            Console.WriteLine(sourcecode);
+        //    Console.WriteLine(sourcecode);
 
-            Console.ReadKey();
+        //    Console.ReadKey();
           
             foreach (Match item in Regex.Matches(sourcecode, "<li>"))
             {
-                Console.WriteLine(item.Index + " +"  + list);
-                list++;
+                //Console.WriteLine(item.Index + " +"  + list);
+
                 if (list >= 10)
                 {
                     goto endofloop1;
                 }
+
+                storlekborjan[list] = item.Index + 4;
+                list++;
+                
+                
             }
 
             endofloop1:
 
             list = 0;
-            Console.WriteLine("slutar här");
+           // Console.WriteLine("slutar här");
 
             foreach (Match item in Regex.Matches(sourcecode, "</li>"))
             {
-                Console.WriteLine(item.Index +  "+ " + list);
-                list++;
+             //   Console.WriteLine(item.Index +  "+ " + list);
                 if (list >= 10)
                 {
                     goto endofloop2;
                 }
+                storlekslutet[list] = item.Index;
+                list++;
+
             }
 
             endofloop2:
             list = 0;
 
-            for (int i = 0; i <= 8; i++)
+            for (int i = 0; i <= 9; i++)
             {
-                int length;
-                int begin = Convert.ToInt32(storlekborjan[i]);
-                int borgan = Convert.ToInt32(storlekborjan[i]);
-                int slutet = Convert.ToInt32(storlekslutet[i]);
-
-
-
-                length = slutet - borgan;
-
-
-
-                while (begin >= length)
-                {
-
-                    matMeny[i] += sourcecode[begin];
-                    begin++;
-                }
-
-                
+                matMeny[i] = sourcecode.Substring(storlekborjan[i], (storlekslutet[i] - storlekborjan[i]));
             }
 
-            Console.WriteLine(matMeny[0]);
 
-            Console.WriteLine(list);
+
+            for (int i = 0; i <= 9; i++)
+            {
+                Console.WriteLine(matMeny[i]);
+            }
+           
+
+           
             Console.ReadKey();
 
         }
